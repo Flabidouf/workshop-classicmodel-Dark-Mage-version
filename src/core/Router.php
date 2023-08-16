@@ -2,6 +2,8 @@
 
 namespace core;
 
+use controllers\ProductController;
+
 class Router
 {
     public function route(string $uri_path): void
@@ -11,7 +13,8 @@ class Router
             case "/":
             case"/index":
             case"/home":
-
+                $productController = new ProductController();
+                $productController->showHome();
                 break;
         }
     }

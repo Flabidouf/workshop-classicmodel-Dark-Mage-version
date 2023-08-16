@@ -1,6 +1,7 @@
 <?php
 
 namespace models;
+
 use PDO;
 use PDOStatement;
 
@@ -15,29 +16,35 @@ class Database
             getenv('DB_USERNAME'),
             getenv('DB_PASSWORD')
         );
-
+        // PDO:: L'attribut qu'on veut changer, la valeur qu'on lui donne.
         $this->pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        // La valeur par défaut de notre PDO pour FETCH sera FETCH_ASSOC.
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
+
+    /**
+     * @param string $sql
+     * @param array $param
+     * @return PDOStatement
+     */
     public function query(string $sql, array $param = []): PDOStatement
     {
         // prépare la requête
        $stmt = $this->pdo->prepare($sql);
-        // bind paramètres
+
+        // bind paramètres à de
         // bouclé sur le tableau de paramètres
         // $key => clé
         // $value => valeur des clés
-        // check si type de notre value
+
        foreach($param as $key=> $value){
-
-
-           /*
+            /* on check si type de notre value est :
            = int
            = bool
            = autre
            */
            if(gettype($value) == "integer") {
-
+                // bindParam = Binds a parameter to the specified variable name
                $stmt->bindParam($key, $value, PDO::PARAM_INT);
 
            } else if (gettype($value) == "boolean") {
@@ -52,23 +59,18 @@ class Database
        $stmt->execute();
        return $stmt;
     }
+
+    /**
+     * @param string $sql
+     * @param array $param
+     * @return bool
+     */
     public function exec(string $sql, array $param = []): bool
     {
         // prépare la requête
         $stmt = $this->pdo->prepare($sql);
 
-
-        // bind paramètres
-        // bouclé sur le tableau de paramètres
-        // $key => clé
-        // $value => valeur des clés
         foreach($param as $key=> $value){
-            // check si type de notre value
-            /*
-            = int
-            = bool
-            = autre
-            */
             if(gettype($value) == "integer") {
                 $stmt->bindParam($key, $value, PDO::PARAM_INT);
 
@@ -80,9 +82,14 @@ class Database
             }
         }
         return $stmt->execute();
+        // Il retourne un bool avec cette valeur
 
     }
-    public function lastInsertId():string|int {
+
+    /**
+     * @return string|int
+     */
+    public function lastInsertId():string|int{
         return $this->pdo->lastInsertId();
     }
 }
